@@ -75,7 +75,7 @@ if [ -z $3 ]
 fi
 
 
-by_day_output=`git -C $PWD log --author=$author --date=format:%u --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c`
+by_day_output=`git -C $PWD log --author=$author --date=format:% --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c`
 
 by_hour_output=`git -C $PWD log --author=$author --date=format:%H --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c`
 

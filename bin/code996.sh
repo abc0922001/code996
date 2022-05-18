@@ -57,31 +57,31 @@ elif [ "$1" == "-h" ]
         exit 0
 fi
 
-if [ -z $1 ]
+if [ -z "$1" ]
     then
         time_start="2021-01-01"
 fi
 
 time_end=$2
-if [ -z $2 ]
+if [ -z "$2" ]
     then
         time_end=$(date "+%Y-%m-%d")
 fi
 
 author=$3
-if [ -z $3 ]
+if [ -z "$3" ]
     then
         author=""
 fi
 
 
-by_day_output=`git -C $PWD log --author=$author --date=format:% --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c`
+by_day_output=$(git -C "$PWD" log --author="$author" --date=format:%w --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c)
 
-by_hour_output=`git -C $PWD log --author=$author --date=format:%H --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c`
+by_hour_output=$(git -C "$PWD" log --author="$author" --date=format:%H --after="$time_start" --before="$time_end" |grep "Date:"|awk '{print $2}'|sort|uniq -c)
 
 for i in "${by_day_output[@]}"
     do
-        by_day_result=`echo "$i"|sed -E 's/^ +//g'|sed 's/ /_/g'|tr '\n' ','`
+        by_day_result=$(echo "$i"|sed -E 's/^ +//g'|sed 's/ /_/g'|tr '\n' ',')
 
     done
 
@@ -100,7 +100,7 @@ for i in "${by_day_output[@]}"
         echo
         echo -e "${RED}一周七天 commit 分布"
         echo -e "  总提交次数 星期\n$i"|column -t
-        by_day_result=`echo "$i"|sed -E 's/^ +//g'|sed "s/ /_/g"|tr '\n' ','`
+        by_day_result=$(echo "$i"|sed -E 's/^ +//g'|sed "s/ /_/g"|tr '\n' ',')
     done
 
 
@@ -109,16 +109,16 @@ for i in "${by_hour_output[@]}"
         echo
         echo -e "${RED}24小时 commit 分布"
         echo -e "  总提交次数 小时\n$i"|column -t
-        by_hour_result=`echo "$i"|sed -E 's/^ +//g'|sed "s/ /_/g"|tr '\n' ','`
+        by_hour_result=$(echo "$i"|sed -E 's/^ +//g'|sed "s/ /_/g"|tr '\n' ',')
     done
 
 
-by_day_result=`echo "$by_day_result"|sed -E 's/,$//g'`
+by_day_result=$(echo "$by_day_result"|sed -E 's/,$//g')
 
-by_hour_result=`echo "$by_hour_result"|sed -E 's/,$//g'`
+by_hour_result=$(echo "$by_hour_result"|sed -E 's/,$//g')
 
 
-result=$time_start"_"$time_end"&week="$by_day_result"&hour="$by_hour_result
+result=$time_start"_$time_end&week=$by_day_result&hour="$by_hour_result
 
 # url
 github_url="https://hellodigua.github.io/code996/#/result?time=$result"
